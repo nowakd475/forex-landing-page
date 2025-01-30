@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)file:///C:/Users/ARMOR%20V315/Desktop/test1.html -->
+<html lang="de"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrierungsformular</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        .form-group input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .form-group input::placeholder {
+            color: #999;
+        }
+        .form-group .error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .form-group input.invalid {
+            border-color: #dc3545;
+        }
+        .form-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+        .form-container button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+<style type="text/css" id="operaUserStyle"></style></head>
+<body>
+    <div class="form-container">
+        <h2>Registrierungsformular</h2>
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" placeholder="Geben Sie Ihren Namen ein" required="">
+                <div class="error" id="nameError">Bitte geben Sie einen gültigen Namen ein.</div>
+            </div>
+            <div class="form-group">
+                <label for="adjective">Nachname</label>
+                <input type="text" id="adjective" placeholder="Geben Sie ihren Nachname ein" required="">
+                <div class="error" id="adjectiveError">Bitte geben Sie ein gültiges Adjektiv ein.</div>
+            </div>
+            <div class="form-group">
+                <label for="email">E-Mail</label>
+                <input type="email" id="email" placeholder="Geben Sie Ihre E-Mail-Adresse ein" required="">
+                <div class="error" id="emailError">Bitte geben Sie eine gültige E-Mail-Adresse ein.</div>
+            </div>
+            <div class="form-group">
+                <label for="phone">Telefonnummer</label>
+                <input type="tel" id="phone" placeholder="Geben Sie Ihre Telefonnummer ein" required="">
+                <div class="error" id="phoneError">Bitte geben Sie eine gültige Telefonnummer ein.</div>
+            </div>
+            <button type="submit" id="submitButton">Registrieren</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('registrationForm');
+        const nameInput = document.getElementById('name');
+        const adjectiveInput = document.getElementById('adjective');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const submitButton = document.getElementById('submitButton');
+
+        // Telegram Bot API
+        const TELEGRAM_BOT_TOKEN = '8108080434:AAFTgFUSuUVW9Lpjp_stc-MkhgZFiVPW1hQ'; // Ersetzen Sie dies durch Ihren Bot-Token
+        const TELEGRAM_CHAT_ID = '5081004921'; // Ersetzen Sie dies durch Ihre Chat-ID
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            submitButton.disabled = true;
+
+            // Eingaben validieren
+            let isValid = true;
+            if (!nameInput.value.trim()) {
+                document.getElementById('nameError').style.display = 'block';
+                nameInput.classList.add('invalid');
+                isValid = false;
+            } else {
+                document.getElementById('nameError').style.display = 'none';
+                nameInput.classList.remove('invalid');
+            }
+
+            if (!adjectiveInput.value.trim()) {
+                document.getElementById('adjectiveError').style.display = 'block';
+                adjectiveInput.classList.add('invalid');
+                isValid = false;
+            } else {
+                document.getElementById('adjectiveError').style.display = 'none';
+                adjectiveInput.classList.remove('invalid');
+            }
+
+            if (!emailInput.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                document.getElementById('emailError').style.display = 'block';
+                emailInput.classList.add('invalid');
+                isValid = false;
+            } else {
+                document.getElementById('emailError').style.display = 'none';
+                emailInput.classList.remove('invalid');
+            }
+
+            if (!phoneInput.value.match(/^\d{10,15}$/)) {
+                document.getElementById('phoneError').style.display = 'block';
+                phoneInput.classList.add('invalid');
+                isValid = false;
+            } else {
+                document.getElementById('phoneError').style.display = 'none';
+                phoneInput.classList.remove('invalid');
+            }
+
+            if (!isValid) {
+                submitButton.disabled = false;
+                return;
+            }
+
+            // Daten vorbereiten
+            const data = {
+                name: nameInput.value.trim(),
+                adjective: adjectiveInput.value.trim(),
+                email: emailInput.value.trim(),
+                phone: phoneInput.value.trim()
+            };
+
+            // Nachricht für Telegram
+            const message = `
+                Neue Registrierung:
+                Name: ${data.name}
+                Adjektiv: ${data.adjective}
+                E-Mail: ${data.email}
+                Telefonnummer: ${data.phone}
+            `;
+
+            // Nachricht an Telegram senden
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: message
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Registrierung erfolgreich!');
+                    form.reset();
+                } else {
+                    throw new Error('Fehler beim Senden der Nachricht an Telegram');
+                }
+            } catch (error) {
+                console.error('Fehler:', error);
+                alert('Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.');
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+
+</body></html>
